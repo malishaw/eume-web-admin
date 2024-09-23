@@ -39,7 +39,8 @@ import { useTranslation } from 'react-i18next';
 import useAuth from 'hooks/useAuth';
 import AvgSurvayByMunicipilityWidg from 'components/dashborad/AvgSurvayByMunicipilityWidg';
 import MunicipilityAvgSurvayMarkWid from 'components/dashborad/MunicipilityAvgSurvayMarkWid';
-
+import WorldMap from './WorldMap';
+import SVGWorldMap from './SvgWorldMap';
 // avatar style
 const avatarSX = {
   width: 36,
@@ -75,7 +76,7 @@ const status = [
 
 // ==============================|| DASHBOARD - DEFAULT ||============================== //
 
-const DashboardDefault = ({}) => {
+const DashboardDefault = ({ }) => {
   const [value, setValue] = useState('today');
   const [slot, setSlot] = useState('week');
 
@@ -185,6 +186,7 @@ const DashboardDefault = ({}) => {
     getEmpList();
   }, [user]);
 
+
   return (
     <Grid container rowSpacing={4.5} columnSpacing={2.75}>
       {/* row 1 */}
@@ -279,6 +281,21 @@ const DashboardDefault = ({}) => {
           />
         </div>
       </Grid>
+
+
+      <Grid item xs={12} sm={6} md={4} lg={12}>
+        <div style={{ marginBottom: '20px' }}>
+          <MainCard contentSX={{ p: .25 }}>
+            <Stack spacing={0.5}>
+              <Typography variant="h5" color="textSecondary">
+                {t('Country wise Total')}
+              </Typography>
+              <SVGWorldMap countryCounts={Object.entries(countryCounts)} />
+            </Stack>
+          </MainCard>
+        </div>
+      </Grid>
+
 
       <Grid item xs={12} sm={6} md={4} lg={3}>
         <div style={{ marginBottom: '20px' }}>
