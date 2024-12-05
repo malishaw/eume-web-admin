@@ -11,7 +11,7 @@ import useLocalStorageFunctions from 'hooks/useLocalStorageFunctions';
 import { set } from 'lodash';
 // import { compare, hash } from 'bcryptjs';
 import { SHA256 } from 'crypto-js';
-import { decryptData, encryptData, compare } from 'utils/security';
+import { decryptData2, encryptData2,encryptData, compare } from 'utils/security';
 
 const FirebaseContext = createContext({
   isLoggedIn: false,
@@ -57,7 +57,7 @@ export const FirebaseProvider = ({ children }) => {
     // const userData = getLocalstorageValue("user");
 
     const encryptedData = getLocalstorageValue("user");
-    const userData = decryptData(encryptedData);
+    const userData = decryptData2(encryptedData);
     console.log({userData})
 
     if(userData){
@@ -86,12 +86,14 @@ export const FirebaseProvider = ({ children }) => {
         let roleName = [];
         let rolePermissions = {};
 
+        console.log("usr.passwordddd", userData.password);
+
         // Compare hashed password
         const passwordMatch = compare(password, userData.password);
-
+        console.log("us password matched?", passwordMatch);
         if (!passwordMatch) {
           // TODO: Critical - Uncomment following code
-          // return { success: false, message: 'Invalid password' };
+          return { success: false, message: 'Invalid password' };
         }
 
         // Fetch role documents based on user roles
@@ -131,7 +133,7 @@ export const FirebaseProvider = ({ children }) => {
 
         // setLocalstorageValue("user", dispatchData.payload.user);
 
-        const encryptedUser = encryptData(dispatchData.payload.user);
+        const encryptedUser = encryptData2(dispatchData.payload.user);
         setLocalstorageValue("user", encryptedUser);
 
         setUser(dispatchData.payload.user);

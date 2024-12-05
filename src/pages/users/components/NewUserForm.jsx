@@ -27,6 +27,7 @@ import { Formik } from 'formik';
 import useAuth from 'hooks/useAuth';
 import useScriptRef from 'hooks/useScriptRef';
 import { strengthColor, strengthIndicator } from 'utils/password-strength';
+import { encryptData} from 'utils/security';
 import { useEffect, useState } from 'react';
 import AnimateButton from 'components/@extended/AnimateButton';
 import IconButton from 'components/@extended/IconButton';
@@ -35,7 +36,6 @@ import { useTranslation } from 'react-i18next';
 import { collection, doc, getDocs, query, updateDoc, where, addDoc } from 'firebase/firestore';
 import { updateEmail, updatePassword } from 'firebase/auth';
 import { db } from 'config/firebase';
-import { hash } from 'bcryptjs';
 
 // const roles = ['Admin', 'User'];
 
@@ -161,8 +161,10 @@ export default function NewUserForm({ setEmpList, handleClickClose, user }) {
 
                   // Handle password update if provided
                   if (values.password && values.password.trim() !== '') {
-                    const hashedPassword = await hash(values.password, 10);
-                    updateData.password = hashedPassword;
+                    const hashedPassword = values.password;
+                    const encryptedPassword = encryptData(hashedPassword);
+
+                    updateData.password = encryptedPassword;
                   }
 
                   // Update the user document
@@ -196,14 +198,17 @@ export default function NewUserForm({ setEmpList, handleClickClose, user }) {
                   }
 
                   // Register new user
-                  const hashedPassword = await hash(values.password, 10);
+                  // const hashedPassword = await hash(values.password, 10);
+                  const encryptedPassword = encryptData(values.password);
                   const userCredential = await firebaseRegister(
                     values.email,
-                    hashedPassword,
+                    encryptedPassword,
                     values.firstname,
                     values.lastname,
                     values.role.map((role) => role.id)
                   );
+
+
 
                   const newUser = {
                     id: userCredential.uid,
